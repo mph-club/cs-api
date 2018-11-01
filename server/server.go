@@ -9,19 +9,11 @@ func CreateAndListen() {
 	v1 := _api.Party("api/v1", cognitoAuth)
 	{
 		v1.Get("/", func(ctx iris.Context) {
-			ctx.Writef("api home!!!!")
-		})
-
-		v1.Get("/service", func(ctx iris.Context) {
-			ctx.Writef("api service!!!!")
-		})
-
-		v1.Get("/swagger", func(ctx iris.Context) {
-			ctx.ServeFile("./swagger/index.html", false)
+			ctx.Writef("cs portal home!!!!")
 		})
 
 		v1.Get("/getCars", getCars)
 	}
 
-	_api.Run(iris.Addr(":8080"))
+	_api.Run(iris.Addr(":8081"))
 }
