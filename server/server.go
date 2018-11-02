@@ -12,7 +12,8 @@ func CreateAndListen() {
 			ctx.Writef("cs portal home!!!!")
 		})
 
-		v1.Get("/getCars", getCars)
+		v1.Get("/getApprovalQueue", getApprovalQueue)
+		v1.Post("/editCarStatus", editCarStatus)
 	}
 
 	_api.Run(iris.Addr(":8081"))

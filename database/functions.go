@@ -1,11 +1,11 @@
 package database
 
 import (
-	"csportal-server/models"
 	"log"
+	"mphclub-rest-server/models"
 )
 
-func GetModQueue() ([]models.Vehicle, error) {
+func GetApprovalQueue() ([]models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 
 	db := connectToDB()
