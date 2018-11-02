@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func GetCars() ([]models.Vehicle, error) {
+func GetModQueue() ([]models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 
 	db := connectToDB()

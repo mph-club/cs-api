@@ -2,6 +2,6 @@ package server
 
 import "github.com/kataras/iris"
 
-func getCars(ctx iris.Context) {
+func getModerationQueue(ctx iris.Context) {
 
 }
