@@ -31,6 +31,9 @@ type Vehicle struct {
 	Coordinates  []float64 `json:"coordinates" sql:",array"`
 	Notes        []*Note   `json:"notes"`
 	ViewIndex    int       `json:"view_index"`
+	Place        string    `json:"place"`
+	ZipCode      string    `json:"zip_code"`
+	Transmission string    `json:"transmission" sql:"type:transmission"`
 }
 
 func (target *Vehicle) Merge(source Vehicle) Vehicle {
@@ -73,6 +76,9 @@ func (target *Vehicle) Merge(source Vehicle) Vehicle {
 	if target.Model != "" {
 		source.Model = target.Model
 	}
+	if target.Place != "" {
+		source.Place = target.Place
+	}
 	if target.Seats != 0 {
 		source.Seats = target.Seats
 	}
@@ -99,6 +105,9 @@ func (target *Vehicle) Merge(source Vehicle) Vehicle {
 	}
 	if target.User != "" {
 		source.User = target.User
+	}
+	if target.ZipCode != "" {
+		source.ZipCode = target.ZipCode
 	}
 
 	return source

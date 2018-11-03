@@ -15,27 +15,25 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/joho/godotenv"
 )
 
 var sub string
 
-func checkToken(tokenString string) (bool, string) {
+func checkToken(tokenString string) (bool, string, string) {
 	region := os.Getenv("AWS_REGION")
 	userPoolID := os.Getenv("COGNITO_USER_POOL_ID")
 
 	jwkURL := fmt.Sprintf("https://cognito-idp.%v.amazonaws.com/%v/.well-known/jwks.json", region, userPoolID)
-
 	jwk := getJWK(jwkURL)
 	token, err := validateToken(tokenString, region, userPoolID, jwk)
 
 	if err != nil || !token.Valid {
 		errMsg := err.Error()
 		log.Println(err)
-		return false, errMsg
+		return false, "", errMsg
 	}
 
-	return true, ""
+	return true, sub, ""
 }
 
 func validateToken(tokenStr, region, userPoolID string, jwk map[string]JWKKey) (*jwt.Token, error) {
@@ -48,7 +46,6 @@ func validateToken(tokenStr, region, userPoolID string, jwk map[string]JWKKey) (
 		if kid, ok := token.Header["kid"]; ok {
 			if kidStr, ok := kid.(string); ok {
 				key := jwk[kidStr]
-
 				rsaPublicKey := convertKey(key.E, key.N)
 				return rsaPublicKey, nil
 			}
@@ -58,9 +55,9 @@ func validateToken(tokenStr, region, userPoolID string, jwk map[string]JWKKey) (
 	})
 
 	if err != nil {
+		log.Println(err.Error())
 		return token, err
 	}
-
 	claims := token.Claims.(jwt.MapClaims)
 
 	csub, ok := claims["sub"]
@@ -68,7 +65,6 @@ func validateToken(tokenStr, region, userPoolID string, jwk map[string]JWKKey) (
 		return token, fmt.Errorf("token does not contain sub")
 	}
 	sub = csub.(string)
-	log.Println("sub: ", sub)
 
 	iss, ok := claims["iss"]
 	if !ok {
@@ -196,8 +192,6 @@ func getJWK(jwkURL string) map[string]JWKKey {
 	for _, jwk := range jwk.Keys {
 		jwkMap[jwk.Kid] = jwk
 	}
-
-	log.Println(jwkMap)
 	return jwkMap
 }
 
@@ -210,11 +204,4 @@ func getJSON(url string, target interface{}) error {
 	defer r.Body.Close()
 
 	return json.NewDecoder(r.Body).Decode(target)
-}
-
-func loadEnv() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading %v\n", err)
-	}
 }

@@ -10,6 +10,7 @@ new-binary:
 docker-build-api:
 	#only have to login (the below command) once per 12 hours
 	#@eval `aws ecr get-login --region us-east-1 --no-include-email`
+	@cp $GOPATH/src/mphclub-rest-server/models/models.go ./models/models.go
 	@docker build -t cs_portal -f ./Dockerfile .
 	@docker tag cs_portal:latest 077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:latest
 	@docker tag cs_portal:latest 077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:${CURRENT_HEAD}
