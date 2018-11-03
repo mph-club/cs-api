@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"log"
@@ -9,7 +9,11 @@ import (
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 )
 
-func InitiateAuthorization() *string {
+func main() {
+	initiateAuthorization()
+}
+
+func initiateAuthorization() *string {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
 	}))
@@ -40,7 +44,7 @@ func InitiateAuthorization() *string {
 	return aws.String("attempt to auth failed")
 }
 
-func CreateUserThroughAWS() {
+func createUserThroughAWS() {
 	sess := session.Must(session.NewSession(&aws.Config{
 		MaxRetries: aws.Int(3),
 		Region:     aws.String("us-east-1"),
@@ -64,5 +68,26 @@ func CreateUserThroughAWS() {
 	} else {
 		log.Println("success!")
 		log.Println(signUpOutput)
+	}
+}
+
+func confirmSignup(confirmCode string) {
+	sess := session.Must(session.NewSession(&aws.Config{
+		MaxRetries: aws.Int(3),
+	}))
+
+	svc := cognitoidentityprovider.New(sess)
+
+	confirmUser, err := svc.ConfirmSignUp(&cognitoidentityprovider.ConfirmSignUpInput{
+		ClientId:         aws.String("7lvbeb74tee3ovdi2c1b42a0pr"),
+		Username:         aws.String("oscar@mphclub.com"),
+		ConfirmationCode: aws.String(confirmCode),
+	})
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		log.Println("success!")
+		log.Println(confirmUser)
 	}
 }
