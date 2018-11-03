@@ -24,7 +24,7 @@ func checkToken(tokenString string) (bool, string, string) {
 	userPoolID := os.Getenv("COGNITO_USER_POOL_ID")
 
 	jwkURL := fmt.Sprintf("https://cognito-idp.%v.amazonaws.com/%v/.well-known/jwks.json", region, userPoolID)
-	jwk := getJWK(jwkURL)
+	jwk := GetJWK(jwkURL)
 	token, err := validateToken(tokenString, region, userPoolID, jwk)
 
 	if err != nil || !token.Valid {
@@ -182,7 +182,7 @@ type JWKKey struct {
 	Use string
 }
 
-func getJWK(jwkURL string) map[string]JWKKey {
+func GetJWK(jwkURL string) map[string]JWKKey {
 
 	jwk := &JWK{}
 
