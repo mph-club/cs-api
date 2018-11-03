@@ -1,8 +1,8 @@
 package database
 
 import (
+	"csportal-server/models"
 	"log"
-	"mphclub-rest-server/models"
 )
 
 func GetApprovalQueue() ([]models.Vehicle, error) {
@@ -10,7 +10,9 @@ func GetApprovalQueue() ([]models.Vehicle, error) {
 
 	db := connectToDB()
 
-	err := db.Model(&vehicleList).Select()
+	err := db.Model(&vehicleList).
+		Where("status = ?", "PENDING").
+		Select()
 	if err != nil {
 		log.Println(err)
 		return nil, err

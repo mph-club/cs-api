@@ -1,9 +1,24 @@
 package server
 
-import "github.com/kataras/iris"
+import (
+	"csportal-server/database"
+	"log"
+
+	"github.com/kataras/iris"
+)
 
 func getApprovalQueue(ctx iris.Context) {
 	//fetch paged list of cars with status: PENDING
+	data, err := database.GetApprovalQueue()
+
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(generateJSONResponse(false, iris.Map{"db_error": err.Error()}))
+		return
+	}
+
+	ctx.JSON(generateJSONResponse(true, iris.Map{"Vehicles": data}))
+	return
 }
 
 func editCarStatus(ctx iris.Context) {
