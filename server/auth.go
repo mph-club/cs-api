@@ -196,6 +196,8 @@ func getJWK(jwkURL string) map[string]JWKKey {
 	for _, jwk := range jwk.Keys {
 		jwkMap[jwk.Kid] = jwk
 	}
+
+	log.Println(jwkMap)
 	return jwkMap
 }
 
@@ -203,7 +205,6 @@ func getJSON(url string, target interface{}) error {
 	var myClient = &http.Client{Timeout: 10 * time.Second}
 	r, err := myClient.Get(url)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 	defer r.Body.Close()
