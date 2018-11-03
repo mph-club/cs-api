@@ -3,6 +3,7 @@ package main
 import (
 	"csportal-server/server"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -12,6 +13,8 @@ func main() {
 
 	jwkURL := fmt.Sprintf("https://cognito-idp.%v.amazonaws.com/%v/.well-known/jwks.json", region, userPoolID)
 	jwk := server.GetJWK(jwkURL)
+
+	log.Println(jwk)
 
 	server.CreateAndListen()
 }

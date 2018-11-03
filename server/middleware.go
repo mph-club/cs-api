@@ -1,8 +1,6 @@
 package server
 
 import (
-	"log"
-
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 )
@@ -11,7 +9,7 @@ func cognitoAuth(ctx iris.Context) {
 	isAuth, sub, err := checkToken(ctx.Request().Header.Get("Authorization"))
 
 	if isAuth {
-		log.Println(sub)
+		ctx.Values().Set("sub", sub)
 		ctx.Next()
 	} else {
 		ctx.StatusCode(iris.StatusUnauthorized)
