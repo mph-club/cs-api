@@ -1,7 +1,7 @@
 FROM golang:1.9-alpine as builder
 WORKDIR /go/src/csportal-server
 COPY . .
-RUN apk update && apk add git && apk add ca-certificates && apk add --no-cache curl
+RUN apk update && apk add git && apk add --no-cache curl && apk add ca-certificates
 RUN curl -L -s https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 -o $GOPATH/bin/dep
 RUN chmod +x $GOPATH/bin/dep
 RUN dep ensure

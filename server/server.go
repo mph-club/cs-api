@@ -8,7 +8,7 @@ func CreateAndListen() {
 
 	v1 := _api.Party("api/v1", cognitoAuth)
 	{
-		v1.Get("/", func(ctx iris.Context) {
+		v1.Get("/home", func(ctx iris.Context) {
 			ctx.Writef("cs portal home!!!!")
 		})
 
