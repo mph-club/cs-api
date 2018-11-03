@@ -1,18 +1,15 @@
-package main
+package client
 
 import (
 	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 )
 
-func main() {
-	initiateAuthorization()
-}
-
-func initiateAuthorization() *string {
+func InitiateAuthorization() *string {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
 	}))
@@ -20,11 +17,11 @@ func initiateAuthorization() *string {
 	svc := cognitoidentityprovider.New(sess)
 
 	initAuth, err := svc.InitiateAuth(&cognitoidentityprovider.InitiateAuthInput{
-		ClientId: aws.String("61lmh73b4k5fdogsbhebmmld33"),
+		ClientId: aws.String("7lvbeb74tee3ovdi2c1b42a0pr"),
 		AuthFlow: aws.String("USER_PASSWORD_AUTH"),
 		AuthParameters: map[string]*string{
 			"USERNAME": aws.String("oscar@mphclub.com"),
-			"PASSWORD": aws.String("@Test123"),
+			"PASSWORD": aws.String("Hunter2!!"),
 		},
 	})
 
@@ -41,4 +38,31 @@ func initiateAuthorization() *string {
 	}
 
 	return aws.String("attempt to auth failed")
+}
+
+func CreateUserThroughAWS() {
+	sess := session.Must(session.NewSession(&aws.Config{
+		MaxRetries: aws.Int(3),
+		Region:     aws.String("us-east-1"),
+	}))
+
+	svc := cognitoidentityprovider.New(sess)
+
+	signUpOutput, err := svc.SignUp(&cognitoidentityprovider.SignUpInput{
+		ClientId: aws.String("7lvbeb74tee3ovdi2c1b42a0pr"),
+		Username: aws.String("oscar@mphclub.com"),
+		Password: aws.String("Hunter2!!"),
+	})
+
+	if err != nil {
+		log.Println("fail!")
+
+		if awsErr, ok := err.(awserr.Error); ok {
+			log.Println(awsErr.Code())
+			log.Println(awsErr.Message())
+		}
+	} else {
+		log.Println("success!")
+		log.Println(signUpOutput)
+	}
 }

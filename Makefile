@@ -15,4 +15,4 @@ docker-build-api:
 	@docker tag cs_portal:latest 077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:${CURRENT_HEAD}
 	@docker push 077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:latest
 	@docker push 077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:${CURRENT_HEAD}
-	@kubectl set image deployments/server-deployment cs_portal=077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:${CURRENT_HEAD}
+	@kubectl set image deployments/cs-portal-deployment cs-portal=077003688714.dkr.ecr.us-east-1.amazonaws.com/cs_portal:${CURRENT_HEAD}
