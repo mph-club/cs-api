@@ -6,7 +6,7 @@ import "github.com/kataras/iris"
 func CreateAndListen() {
 	_api := iris.New()
 
-	v1 := _api.Party("api/v1", cognitoAuth)
+	v1 := _api.Party("api/v1")
 	{
 		v1.Get("/home", func(ctx iris.Context) {
 			ctx.Writef("cs portal home!!!!")
