@@ -6,13 +6,13 @@ import "github.com/kataras/iris"
 func CreateAndListen() {
 	_api := iris.New()
 
-	v1 := _api.Party("api/v1")
+	v1 := _api.Party("api/v1", cognitoAuth)
 	{
 		v1.Get("/home", func(ctx iris.Context) {
 			ctx.Writef("cs portal home!!!!")
 		})
 
-		v1.Get("/getApprovalQueue", cognitoAuth, getApprovalQueue)
+		v1.Get("/getApprovalQueue", getApprovalQueue)
 		v1.Post("/editCarStatus", editCarStatus)
 	}
 
