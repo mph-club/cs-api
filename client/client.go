@@ -10,6 +10,8 @@ import (
 )
 
 func main() {
+	//createUserThroughAWS()
+	//confirmSignup("444444")
 	initiateAuthorization()
 }
 

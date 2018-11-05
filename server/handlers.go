@@ -8,8 +8,10 @@ import (
 )
 
 func getApprovalQueue(ctx iris.Context) {
+	urlQuery := ctx.Request().URL.Query()
+
 	//fetch paged list of cars with status: PENDING
-	data, err := database.GetApprovalQueue()
+	data, err := database.GetApprovalQueue(urlQuery)
 
 	if err != nil {
 		log.Println(err)
