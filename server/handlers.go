@@ -25,6 +25,18 @@ func getApprovalQueue(ctx iris.Context) {
 
 func editCarStatus(ctx iris.Context) {
 	//change car's status with the request body's enum value
+	vehicleID := ctx.PostValue("id")
+	statusChange := ctx.PostValue("edit_status")
+
+	err := database.EditCarStatus(vehicleID, statusChange)
+
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(generateJSONResponse(false, iris.Map{"db_error": err.Error()}))
+		return
+	}
+
+	ctx.JSON(generateJSONResponse(true, iris.Map{"result": "vehicle status was updated"}))
 }
 
 func addNotes(ctx iris.Context) {

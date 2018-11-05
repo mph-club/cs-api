@@ -24,3 +24,25 @@ func GetApprovalQueue(queryParams url.Values) ([]models.Vehicle, error) {
 
 	return vehicleList, nil
 }
+
+func EditCarStatus(car, status string) error {
+	vehicle := models.Vehicle{
+		ID:     car,
+		Status: status,
+	}
+
+	db := connectToDB()
+
+	res, err := db.Model(vehicle).
+		Column("status").
+		WherePK().
+		Update()
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	log.Println(res.RowsReturned())
+	return nil
+}
