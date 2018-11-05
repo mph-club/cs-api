@@ -33,10 +33,8 @@ func editCarStatus(ctx iris.Context) {
 		ctx.JSON(generateJSONResponse(false, iris.Map{"database_error": err.Error()}))
 		return
 	}
-	vehicleID := ctx.PostValue("id")
-	statusChange := ctx.PostValue("edit_status")
 
-	err := database.EditCarStatus(vehicleID, statusChange)
+	err := database.EditCarStatus(&v)
 
 	if err != nil {
 		log.Println(err)
