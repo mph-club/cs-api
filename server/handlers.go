@@ -2,6 +2,7 @@ package server
 
 import (
 	"csportal-server/database"
+	"csportal-server/models"
 	"log"
 
 	"github.com/kataras/iris"
@@ -25,6 +26,13 @@ func getApprovalQueue(ctx iris.Context) {
 
 func editCarStatus(ctx iris.Context) {
 	//change car's status with the request body's enum value
+	var v models.Vehicle
+
+	if err := ctx.ReadJSON(&v); err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
+		ctx.JSON(generateJSONResponse(false, iris.Map{"database_error": err.Error()}))
+		return
+	}
 	vehicleID := ctx.PostValue("id")
 	statusChange := ctx.PostValue("edit_status")
 
