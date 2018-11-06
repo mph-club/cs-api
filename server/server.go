@@ -14,6 +14,8 @@ func CreateAndListen() {
 		AllowCredentials: true,
 	})
 
+	_api.Use(requestLogger())
+
 	v1 := _api.Party("api/v1", cognitoAuth, crs).AllowMethods(iris.MethodOptions)
 	{
 		v1.Get("/home", func(ctx iris.Context) {
