@@ -4,6 +4,7 @@ import (
 	"csportal-server/models"
 	"log"
 	"net/url"
+	"strings"
 
 	"github.com/go-pg/pg/orm"
 )
@@ -22,6 +23,8 @@ func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, 
 			return nil, err
 		}
 	} else {
+		status = strings.ToUpper(status)
+
 		err := db.Model(&vehicleList).
 			Apply(orm.Pagination(queryParams)).
 			Where("status = ?", status).
