@@ -10,9 +10,10 @@ import (
 
 func getApprovalQueue(ctx iris.Context) {
 	urlQuery := ctx.Request().URL.Query()
+	status := ctx.FormValue("status")
 
 	//fetch paged list of cars with status: PENDING
-	data, err := database.GetApprovalQueue(urlQuery)
+	data, err := database.GetApprovalQueue(urlQuery, status)
 
 	if err != nil {
 		log.Println(err)

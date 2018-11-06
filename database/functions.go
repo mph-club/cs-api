@@ -8,18 +8,28 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
-func GetApprovalQueue(queryParams url.Values) ([]models.Vehicle, error) {
+func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 
 	db := connectToDB()
 
-	err := db.Model(&vehicleList).
-		Apply(orm.Pagination(queryParams)).
-		Where("status = ?", "PENDING").
-		Select()
-	if err != nil {
-		log.Println(err)
-		return nil, err
+	if len(status) == 0 {
+		err := db.Model(&vehicleList).
+			Apply(orm.Pagination(queryParams)).
+			Select()
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+	} else {
+		err := db.Model(&vehicleList).
+			Apply(orm.Pagination(queryParams)).
+			Where("status = ?", status).
+			Select()
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
 	}
 
 	return vehicleList, nil

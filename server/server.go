@@ -12,7 +12,7 @@ func CreateAndListen() {
 			ctx.Writef("cs portal home!!!!")
 		})
 
-		v1.Get("/getApprovalQueue", getApprovalQueue)
+		v1.Get("/getAll", getApprovalQueue)
 		v1.Post("/editCarStatus", editCarStatus)
 	}
 
