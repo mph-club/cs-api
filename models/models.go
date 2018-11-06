@@ -23,13 +23,13 @@ type Vehicle struct {
 	CreatedTime  time.Time `json:"created_time"`
 	UpdatedBy    string    `json:"updated_by"`
 	UpdatedTime  time.Time `json:"updated_time"`
-	User         string    `json:"user_sub"`
+	UserID       string    `json:"user"`
 	IsPublished  bool      `json:"is_published"`
 	Address      string    `json:"address"`
 	City         string    `json:"city"`
 	State        string    `json:"state"`
 	Coordinates  []float64 `json:"coordinates" sql:",array"`
-	Notes        []*Note   `json:"notes"`
+	Notes        []*Note   `json:"notes" sql:"-"`
 	ViewIndex    int       `json:"view_index"`
 	Place        string    `json:"place"`
 	ZipCode      string    `json:"zip_code"`
@@ -103,8 +103,8 @@ func (target *Vehicle) Merge(source Vehicle) Vehicle {
 	if target.Year != 0 {
 		source.Year = target.Year
 	}
-	if target.User != "" {
-		source.User = target.User
+	if target.UserID != "" {
+		source.UserID = target.UserID
 	}
 	if target.ZipCode != "" {
 		source.ZipCode = target.ZipCode
@@ -122,12 +122,11 @@ type Note struct {
 }
 
 type User struct {
-	Sub          string   `json:"sub" sql:",pk,unique"`
-	Email        string   `json:"email"`
-	Phone        string   `json:"phone"`
-	ListedCars   []string `json:"listed_cars" sql:",array"`
-	UnlistedCars []string `json:"unlisted_cars" sql:",array"`
-	Notes        []*Note  `json:"notes"`
+	ID       string     `json:"id" sql:",unique"`
+	Email    string     `json:"email"`
+	Phone    string     `json:"phone"`
+	Vehicles []*Vehicle `json:"vehicles" sql:"-"`
+	Notes    []*Note    `json:"notes" sql:"-"`
 }
 
 func (target *User) Merge(source User) User {
@@ -136,12 +135,6 @@ func (target *User) Merge(source User) User {
 	}
 	if target.Phone != "" {
 		source.Phone = target.Phone
-	}
-	if len(target.ListedCars) > 0 {
-		source.ListedCars = append(source.ListedCars, target.ListedCars...)
-	}
-	if len(target.UnlistedCars) > 0 {
-		source.UnlistedCars = append(source.UnlistedCars, target.UnlistedCars...)
 	}
 
 	return source
