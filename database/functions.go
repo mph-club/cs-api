@@ -16,7 +16,6 @@ func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, 
 
 	if len(status) == 0 {
 		err := db.Model(&vehicleList).
-			Column("make", "model", "year", "status", "user_id", "id", "photos").
 			Apply(orm.Pagination(queryParams)).
 			Select()
 		if err != nil {
@@ -27,7 +26,6 @@ func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, 
 		status = strings.ToUpper(status)
 
 		err := db.Model(&vehicleList).
-			Column("make", "model", "year", "status", "user_id", "id", "photos").
 			Apply(orm.Pagination(queryParams)).
 			Where("status = ?", status).
 			Select()
