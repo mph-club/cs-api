@@ -94,8 +94,8 @@ func (target *Vehicle) Merge(source Vehicle) Vehicle {
 	if target.VehicleType != "" {
 		source.VehicleType = target.VehicleType
 	}
-	if target.ViewIndex != 0 {
-		source.VehicleType = target.VehicleType
+	if target.ViewIndex != -1 {
+		source.ViewIndex = target.ViewIndex
 	}
 	if target.Vin != "" {
 		source.Vin = target.Vin

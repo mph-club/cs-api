@@ -3,12 +3,12 @@ package server
 import (
 	"csportal-server/database"
 	"csportal-server/models"
-	"log"
+	"net/http"
 
-	"github.com/kataras/iris"
+	"github.com/labstack/echo"
 )
 
-func getApprovalQueue(ctx iris.Context) {
+func getApprovalQueue(ctx echo.Context) error {
 	urlQuery := ctx.Request().URL.Query()
 	status := ctx.FormValue("status")
 
@@ -16,40 +16,33 @@ func getApprovalQueue(ctx iris.Context) {
 	data, err := database.GetApprovalQueue(urlQuery, status)
 
 	if err != nil {
-		log.Println(err)
-		ctx.JSON(generateJSONResponse(false, iris.Map{"db_error": err.Error()}))
-		return
+		return ctx.JSON(generateJSONResponse(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	ctx.JSON(generateJSONResponse(true, iris.Map{"Vehicles": data}))
-	return
+	return ctx.JSON(generateJSONResponse(true, http.StatusOK, map[string]interface{}{"Vehicles": data}))
 }
 
-func editCarStatus(ctx iris.Context) {
+func editCarStatus(ctx echo.Context) error {
 	//change car's status with the request body's enum value
 	var v models.Vehicle
 
-	if err := ctx.ReadJSON(&v); err != nil {
-		ctx.StatusCode(iris.StatusBadRequest)
-		ctx.JSON(generateJSONResponse(false, iris.Map{"database_error": err.Error()}))
-		return
+	if err := ctx.Bind(&v); err != nil {
+		return ctx.JSON(generateJSONResponse(false, http.StatusBadRequest, map[string]interface{}{"database_error": err.Error()}))
 	}
 
 	err := database.EditCarStatus(&v)
 
 	if err != nil {
-		log.Println(err)
-		ctx.JSON(generateJSONResponse(false, iris.Map{"db_error": err.Error()}))
-		return
+		return ctx.JSON(generateJSONResponse(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	ctx.JSON(generateJSONResponse(true, iris.Map{"result": "vehicle status was updated"}))
+	return ctx.JSON(generateJSONResponse(true, http.StatusOK, map[string]interface{}{"result": "vehicle status was updated"}))
 }
 
-func addNotes(ctx iris.Context) {
+func addNotes(ctx echo.Context) {
 	//add a note to the users or vehicles notes array
 }
 
-func deleteNotes(ctx iris.Context) {
+func deleteNotes(ctx echo.Context) {
 	//deletes a note from the users or vehicles notes array
 }

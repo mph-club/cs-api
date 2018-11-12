@@ -1,31 +1,23 @@
 package server
 
 import (
-	"github.com/iris-contrib/middleware/cors"
-	"github.com/kataras/iris"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 // CreateAndListen exposes the listen and creation of the api
 func CreateAndListen() {
-	_api := iris.New()
+	_api := echo.New()
 
-	crs := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"}, // allows everything, use that to change the hosts.
+	_api.Use(middleware.Logger())
+
+	v1 := _api.Group("api/v1", cognitoAuth)
+	v1.GET("/home", func(ctx echo.Context) error {
+		return ctx.String(200, "cs portal home!!!!")
 	})
 
-	_api.Use(requestLogger())
-	_api.Use(crs)
+	v1.GET("/getAll", getApprovalQueue)
+	v1.POST("/editCarStatus", editCarStatus)
 
-	v1 := _api.Party("api/v1", cognitoAuth)
-	{
-		v1.Get("/home", func(ctx iris.Context) {
-			ctx.Writef("cs portal home!!!!")
-		})
-
-		v1.Get("/getAll", getApprovalQueue)
-		v1.Post("/editCarStatus", editCarStatus)
-	}
-
-	_api.Run(iris.Addr(":8081"),
-		iris.WithOptimizations)
+	_api.Start(":8081")
 }
