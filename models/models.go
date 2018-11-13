@@ -29,7 +29,7 @@ type Vehicle struct {
 	City         string    `json:"city"`
 	State        string    `json:"state"`
 	Coordinates  []float64 `json:"coordinates" sql:",array"`
-	Notes        []*Note   `json:"notes" sql:"-"`
+	Notes        []Note    `json:"notes" sql:",fk"`
 	ViewIndex    int       `json:"view_index"`
 	Place        string    `json:"place"`
 	ZipCode      string    `json:"zip_code"`
@@ -118,7 +118,16 @@ type Note struct {
 	CreatedBy   string `json:"created_by"`
 	CreatedTime string `json:"created_time"`
 	ID          int    `json:"id" sql:",pk"`
-	NoteID      string `json:"note_id"`
+	UserID      string `json:"user_id" sql:",fk"`
+	VehicleID   string `json:"vehicle_id" sql:",fk"`
+}
+
+func (target *Note) Merge(source Note) Note {
+	if target.Comment != "" {
+		source.Comment = target.Comment
+	}
+
+	return source
 }
 
 type User struct {

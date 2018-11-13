@@ -53,3 +53,71 @@ func EditCarStatus(vehicle *models.Vehicle) error {
 
 	return nil
 }
+
+func InsertNote(note *models.Note) error {
+	db := connectToDB()
+
+	if err := db.Insert(&note); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func EditNote(note *models.Note) error {
+	db := connectToDB()
+
+	if err := db.Select(&note); err != nil {
+		return err
+	}
+
+	err := db.Update(&note)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetUserNotes(u *models.User) ([]models.Note, error) {
+	db := connectToDB()
+
+	var user []models.User
+
+	err := db.Model(&user).
+		Column("user.*", "Notes").
+		Relation("Notes", func(q *orm.Query) (*orm.Query, error) {
+			return q.Order("created_time DESC"), nil
+		}).
+		Where("id = ?", u.ID).
+		Select()
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return user[0].Notes, nil
+}
+
+func GetVehicleNotes(v *models.Vehicle) ([]models.Note, error) {
+	db := connectToDB()
+
+	var vehicle []models.Vehicle
+
+	err := db.Model(&vehicle).
+		Column("vehicle.*", "Notes").
+		Relation("Notes", func(q *orm.Query) (*orm.Query, error) {
+			return q.Order("created_time DESC"), nil
+		}).
+		Where("id = ?", v.ID).
+		Select()
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return vehicle[0].Notes, nil
+}

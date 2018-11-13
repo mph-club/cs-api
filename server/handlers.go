@@ -16,10 +16,13 @@ func getApprovalQueue(ctx echo.Context) error {
 	data, err := database.GetApprovalQueue(urlQuery, status)
 
 	if err != nil {
-		return ctx.JSON(generateJSONResponse(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(generateJSONResponse(true, http.StatusOK, map[string]interface{}{"Vehicles": data}))
+	return ctx.JSON(makeOKResponse(map[string]interface{}{"Vehicles": data}))
 }
 
 func editCarStatus(ctx echo.Context) error {
@@ -27,20 +30,45 @@ func editCarStatus(ctx echo.Context) error {
 	var v models.Vehicle
 
 	if err := ctx.Bind(&v); err != nil {
-		return ctx.JSON(generateJSONResponse(false, http.StatusBadRequest, map[string]interface{}{"database_error": err.Error()}))
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"database_error": err.Error()}))
 	}
 
 	err := database.EditCarStatus(&v)
 
 	if err != nil {
-		return ctx.JSON(generateJSONResponse(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(generateJSONResponse(true, http.StatusOK, map[string]interface{}{"result": "vehicle status was updated"}))
+	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "vehicle status was updated"}))
 }
 
-func addNotes(ctx echo.Context) {
+func addNote(ctx echo.Context) error {
 	//add a note to the users or vehicles notes array
+	var n models.Note
+
+	if err := ctx.Bind(&n); err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"server_error": err.Error()}))
+	}
+
+	err := database.InsertNote(&n)
+
+	if err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"db_error": err.Error()}))
+	}
+
+	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "note was inserted"}))
 }
 
 func deleteNotes(ctx echo.Context) {
