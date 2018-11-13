@@ -18,6 +18,7 @@ func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, 
 	if len(status) == 0 {
 		err := db.Model(&vehicleList).
 			Apply(orm.Pagination(queryParams)).
+			Order("updated_time ASC").
 			Select()
 		if err != nil {
 			log.Println(err)
@@ -29,6 +30,7 @@ func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, 
 		err := db.Model(&vehicleList).
 			Apply(orm.Pagination(queryParams)).
 			Where("status = ?", status).
+			Order("updated_time ASC").
 			Select()
 		if err != nil {
 			log.Println(err)
