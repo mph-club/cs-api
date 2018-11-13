@@ -122,14 +122,6 @@ type Note struct {
 	VehicleID   string `json:"vehicle_id" sql:",fk"`
 }
 
-func (target *Note) Merge(source Note) Note {
-	if target.Comment != "" {
-		source.Comment = target.Comment
-	}
-
-	return source
-}
-
 type User struct {
 	ID       string    `json:"id" sql:",unique"`
 	Email    string    `json:"email"`

@@ -18,6 +18,9 @@ func CreateAndListen() {
 
 	v1.GET("/getAll", getApprovalQueue)
 	v1.POST("/editCarStatus", editCarStatus)
+	v1.POST("/addNote", addNote)
+	v1.GET("/getCarNotes", getNotesForCar)
+	v1.GET("/getUserNotes", getNotesForUser)
 
 	_api.Start(":8081")
 }

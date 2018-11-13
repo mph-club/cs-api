@@ -71,6 +71,50 @@ func addNote(ctx echo.Context) error {
 	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "note was inserted"}))
 }
 
+func getNotesForCar(ctx echo.Context) error {
+	var v models.Vehicle
+
+	if err := ctx.Bind(&v); err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"server_error": err.Error()}))
+	}
+
+	list, err := database.GetVehicleNotes(&v)
+
+	if err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"database_error": err.Error()}))
+	}
+
+	return ctx.JSON(makeOKResponse(map[string]interface{}{"notes": list}))
+}
+
+func getNotesForUser(ctx echo.Context) error {
+	var u models.User
+
+	if err := ctx.Bind(&u); err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"server_error": err.Error()}))
+	}
+
+	list, err := database.GetUserNotes(&u)
+
+	if err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"database_error": err.Error()}))
+	}
+
+	return ctx.JSON(makeOKResponse(map[string]interface{}{"notes": list}))
+}
+
 func deleteNotes(ctx echo.Context) {
 	//deletes a note from the users or vehicles notes array
 }
