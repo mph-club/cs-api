@@ -10,7 +10,7 @@ import (
 
 func getApprovalQueue(ctx echo.Context) error {
 	urlQuery := ctx.Request().URL.Query()
-	status := ctx.FormValue("status")
+	status := ctx.QueryParam("status")
 
 	//fetch paged list of cars with status: PENDING
 	data, err := database.GetApprovalQueue(urlQuery, status)
@@ -97,15 +97,9 @@ func addUserNote(ctx echo.Context) error {
 func getNotesForCar(ctx echo.Context) error {
 	var v models.Vehicle
 
-	if err := ctx.Bind(&v); err != nil {
-		return ctx.JSON(
-			makeErrorResponse(
-				http.StatusBadRequest,
-				map[string]interface{}{"server_error": err.Error()}))
-	}
+	v.ID = ctx.QueryParam("id")
 
 	list, err := database.GetVehicleNotes(&v)
-
 	if err != nil {
 		return ctx.JSON(
 			makeErrorResponse(
@@ -119,15 +113,9 @@ func getNotesForCar(ctx echo.Context) error {
 func getNotesForUser(ctx echo.Context) error {
 	var u models.User
 
-	if err := ctx.Bind(&u); err != nil {
-		return ctx.JSON(
-			makeErrorResponse(
-				http.StatusBadRequest,
-				map[string]interface{}{"server_error": err.Error()}))
-	}
+	u.ID = ctx.QueryParam("id")
 
 	list, err := database.GetUserNotes(&u)
-
 	if err != nil {
 		return ctx.JSON(
 			makeErrorResponse(

@@ -2,6 +2,7 @@ package database
 
 import (
 	"csportal-server/models"
+	"errors"
 	"log"
 	"net/url"
 	"strings"
@@ -57,7 +58,7 @@ func EditCarStatus(vehicle *models.Vehicle) error {
 func InsertCarNote(note *models.VehicleNote) error {
 	db := connectToDB()
 
-	if err := db.Insert(&note); err != nil {
+	if err := db.Insert(note); err != nil {
 		log.Println(err)
 		return err
 	}
@@ -68,7 +69,7 @@ func InsertCarNote(note *models.VehicleNote) error {
 func InsertUserNote(note *models.UserNote) error {
 	db := connectToDB()
 
-	if err := db.Insert(&note); err != nil {
+	if err := db.Insert(note); err != nil {
 		log.Println(err)
 		return err
 	}
@@ -79,11 +80,11 @@ func InsertUserNote(note *models.UserNote) error {
 func EditCarNote(note *models.VehicleNote) error {
 	db := connectToDB()
 
-	if err := db.Select(&note); err != nil {
-		return err
+	if err := db.Select(note); err != nil {
+		log.Println(err)
 	}
 
-	err := db.Update(&note)
+	err := db.Update(note)
 	if err != nil {
 		return err
 	}
@@ -94,11 +95,11 @@ func EditCarNote(note *models.VehicleNote) error {
 func EditUserNote(note *models.UserNote) error {
 	db := connectToDB()
 
-	if err := db.Select(&note); err != nil {
+	if err := db.Select(note); err != nil {
 		return err
 	}
 
-	err := db.Update(&note)
+	err := db.Update(note)
 	if err != nil {
 		return err
 	}
@@ -109,14 +110,12 @@ func EditUserNote(note *models.UserNote) error {
 func GetUserNotes(u *models.User) ([]models.UserNote, error) {
 	db := connectToDB()
 
-	var user []models.User
-
-	err := db.Model(&user).
-		Column("user.*", "Notes").
-		Relation("Notes", func(q *orm.Query) (*orm.Query, error) {
+	var users []models.User
+	err := db.Model(&users).
+		Column("user.*", "UserNotes").
+		Relation("UserNotes", func(q *orm.Query) (*orm.Query, error) {
 			return q.Order("created_time DESC"), nil
 		}).
-		Where("id = ?", u.ID).
 		Select()
 
 	if err != nil {
@@ -124,17 +123,21 @@ func GetUserNotes(u *models.User) ([]models.UserNote, error) {
 		return nil, err
 	}
 
-	return user[0].Notes, nil
+	if len(users[0].UserNotes) == 0 {
+		return nil, errors.New("This user has no notes")
+	}
+
+	return users[0].UserNotes, nil
 }
 
 func GetVehicleNotes(v *models.Vehicle) ([]models.VehicleNote, error) {
 	db := connectToDB()
 
-	var vehicle []models.Vehicle
+	var vehicles []models.Vehicle
 
-	err := db.Model(&vehicle).
-		Column("vehicle.*", "Notes").
-		Relation("Notes", func(q *orm.Query) (*orm.Query, error) {
+	err := db.Model(&vehicles).
+		Column("vehicle.*", "VehicleNotes").
+		Relation("VehicleNotes", func(q *orm.Query) (*orm.Query, error) {
 			return q.Order("created_time DESC"), nil
 		}).
 		Where("id = ?", v.ID).
@@ -145,5 +148,9 @@ func GetVehicleNotes(v *models.Vehicle) ([]models.VehicleNote, error) {
 		return nil, err
 	}
 
-	return vehicle[0].Notes, nil
+	if len(vehicles[0].VehicleNotes) == 0 {
+		return nil, errors.New("This vehicle has no notes")
+	}
+
+	return vehicles[0].VehicleNotes, nil
 }
