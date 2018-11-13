@@ -48,9 +48,9 @@ func editCarStatus(ctx echo.Context) error {
 	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "vehicle status was updated"}))
 }
 
-func addNote(ctx echo.Context) error {
+func addCarNote(ctx echo.Context) error {
 	//add a note to the users or vehicles notes array
-	var n models.Note
+	var n models.VehicleNote
 
 	if err := ctx.Bind(&n); err != nil {
 		return ctx.JSON(
@@ -59,7 +59,30 @@ func addNote(ctx echo.Context) error {
 				map[string]interface{}{"server_error": err.Error()}))
 	}
 
-	err := database.InsertNote(&n)
+	err := database.InsertCarNote(&n)
+
+	if err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"db_error": err.Error()}))
+	}
+
+	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "note was inserted"}))
+}
+
+func addUserNote(ctx echo.Context) error {
+	//add a note to the users or vehicles notes array
+	var n models.UserNote
+
+	if err := ctx.Bind(&n); err != nil {
+		return ctx.JSON(
+			makeErrorResponse(
+				http.StatusBadRequest,
+				map[string]interface{}{"server_error": err.Error()}))
+	}
+
+	err := database.InsertUserNote(&n)
 
 	if err != nil {
 		return ctx.JSON(

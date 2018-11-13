@@ -54,7 +54,7 @@ func EditCarStatus(vehicle *models.Vehicle) error {
 	return nil
 }
 
-func InsertNote(note *models.Note) error {
+func InsertCarNote(note *models.VehicleNote) error {
 	db := connectToDB()
 
 	if err := db.Insert(&note); err != nil {
@@ -65,7 +65,18 @@ func InsertNote(note *models.Note) error {
 	return nil
 }
 
-func EditNote(note *models.Note) error {
+func InsertUserNote(note *models.UserNote) error {
+	db := connectToDB()
+
+	if err := db.Insert(&note); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func EditCarNote(note *models.VehicleNote) error {
 	db := connectToDB()
 
 	if err := db.Select(&note); err != nil {
@@ -80,7 +91,22 @@ func EditNote(note *models.Note) error {
 	return nil
 }
 
-func GetUserNotes(u *models.User) ([]models.Note, error) {
+func EditUserNote(note *models.UserNote) error {
+	db := connectToDB()
+
+	if err := db.Select(&note); err != nil {
+		return err
+	}
+
+	err := db.Update(&note)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetUserNotes(u *models.User) ([]models.UserNote, error) {
 	db := connectToDB()
 
 	var user []models.User
@@ -101,7 +127,7 @@ func GetUserNotes(u *models.User) ([]models.Note, error) {
 	return user[0].Notes, nil
 }
 
-func GetVehicleNotes(v *models.Vehicle) ([]models.Note, error) {
+func GetVehicleNotes(v *models.Vehicle) ([]models.VehicleNote, error) {
 	db := connectToDB()
 
 	var vehicle []models.Vehicle

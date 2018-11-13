@@ -18,7 +18,8 @@ func CreateAndListen() {
 
 	v1.GET("/getAll", getApprovalQueue)
 	v1.POST("/editCarStatus", editCarStatus)
-	v1.POST("/addNote", addNote)
+	v1.POST("/addCarNote", addCarNote)
+	v1.POST("/addUserNote", addUserNote)
 	v1.GET("/getCarNotes", getNotesForCar)
 	v1.GET("/getUserNotes", getNotesForUser)
 
