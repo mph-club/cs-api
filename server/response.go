@@ -1,7 +1,5 @@
 package server
 
-import "net/http"
-
 type successResponse struct {
 	Data    map[string]interface{} `json:"data"`
 	Message string                 `json:"message"`
@@ -12,16 +10,19 @@ type errorResponse struct {
 	Message string                 `json:"message"`
 }
 
-func makeOKResponse(responseMap map[string]interface{}) (int, interface{}) {
-	return http.StatusOK, &successResponse{
-		Data:    responseMap,
-		Message: "success",
-	}
-}
+func response(success bool, statusCode int, responseMap map[string]interface{}) (int, interface{}) {
+	pass := "success"
+	fail := "fail"
 
-func makeErrorResponse(statusCode int, responseMap map[string]interface{}) (int, interface{}) {
+	if success {
+		return statusCode, &successResponse{
+			Data:    responseMap,
+			Message: pass,
+		}
+	}
+
 	return statusCode, &errorResponse{
 		Error:   responseMap,
-		Message: "fail",
+		Message: fail,
 	}
 }
