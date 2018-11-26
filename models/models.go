@@ -2,38 +2,85 @@ package models
 
 import "time"
 
+type DriverLicense struct {
+	Address      string    `json:"address"`
+	City         string    `json:"city"`
+	DLNumber     string    `json:"dl_number"`
+	DOBTimeStamp time.Time `json:"dobTime"`
+	FirstName    string    `json:"first_name"`
+	Height       string    `json:"height"`
+	ID           int       `json:"id"`
+	LastName     string    `json:"last_name"`
+	MiddleName   string    `json:"middle_name"`
+	State        string    `json:"state"`
+}
+
+type User struct {
+	ID              string        `json:"id" sql:",unique"`
+	Email           string        `json:"email"`
+	Phone           string        `json:"phone"`
+	ProfilePhotoURL string        `json:"profile_photo"`
+	Vehicles        []Vehicle     `json:"vehicles" sql:",fk"`
+	UserNotes       []UserNote    `json:"notes" sql:",fk"`
+	DriverLicense   DriverLicense `json:"driver_license" sql:",fk"`
+	DriverLicenseID int           `json:"dl_id"`
+}
+
+func (target *User) Merge(source User) User {
+	if target.Email != "" {
+		source.Email = target.Email
+	}
+	if target.Phone != "" {
+		source.Phone = target.Phone
+	}
+
+	return source
+}
+
+type UserNote struct {
+	Comment     string    `json:"comment"`
+	CreatedBy   string    `json:"created_by"`
+	CreatedTime time.Time `json:"created_time"`
+	ID          int       `json:"id" sql:",pk"`
+	UpdatedBy   string    `json:"updated_by"`
+	UpdatedTime time.Time `json:"updated_time"`
+	UserID      string    `json:"user_id" sql:",fk"`
+}
+
 type Vehicle struct {
-	ID           string        `json:"id"`
-	Make         string        `json:"make"`
-	Model        string        `json:"model"`
-	Year         int           `json:"year"`
-	Trim         string        `json:"trim"`
+	Address      string        `json:"address"`
+	City         string        `json:"city"`
 	Color        string        `json:"color"`
-	Doors        int           `json:"doors"`
-	Seats        int           `json:"seats"`
-	Vin          string        `json:"vin"`
-	Description  string        `json:"description"`
+	Coordinates  []float64     `json:"coordinates" sql:",array"`
+	CreatedTime  time.Time     `json:"created_time"`
 	DayMax       int           `json:"day_max"`
 	DayMin       int           `json:"day_min"`
-	VehicleType  string        `json:"vehicle_type"`
-	Photos       []string      `json:"photos" sql:",array"`
-	Miles        int           `json:"miles"`
+	Description  string        `json:"description"`
+	Doors        int           `json:"doors"`
+	ID           string        `json:"id"`
+	IsPublished  bool          `json:"is_published"`
 	LicensePlate string        `json:"license_plate"`
+	Make         string        `json:"make"`
+	Miles        int           `json:"miles"`
+	Model        string        `json:"model"`
+	Photos       []string      `json:"photos" sql:",array"`
+	Place        string        `json:"place"`
+	Premium      bool          `json:"premium"`
+	Seats        int           `json:"seats"`
+	State        string        `json:"state"`
 	Status       string        `json:"status" sql:"type:status"`
-	CreatedTime  time.Time     `json:"created_time"`
+	Thumbnails   []string      `json:"thumbnails" sql:",array"`
+	Transmission string        `json:"transmission" sql:"type:transmission"`
+	Trim         string        `json:"trim"`
 	UpdatedBy    string        `json:"updated_by"`
 	UpdatedTime  time.Time     `json:"updated_time"`
 	UserID       string        `json:"user" sql:",fk"`
-	IsPublished  bool          `json:"is_published"`
-	Address      string        `json:"address"`
-	City         string        `json:"city"`
-	State        string        `json:"state"`
-	Coordinates  []float64     `json:"coordinates" sql:",array"`
-	VehicleNotes []VehicleNote `json:"notes" sql:",fk"`
+	VehicleNotes []VehicleNote `json:"notes" sql:"-,fk"`
+	VehicleType  string        `json:"vehicle_type"`
 	ViewIndex    int           `json:"view_index"`
-	Place        string        `json:"place"`
+	Vin          string        `json:"vin"`
+	Year         int           `json:"year"`
 	ZipCode      string        `json:"zip_code"`
-	Transmission string        `json:"transmission" sql:"type:transmission"`
 }
 
 func (target *Vehicle) Merge(source Vehicle) Vehicle {
@@ -121,33 +168,4 @@ type VehicleNote struct {
 	UpdatedBy   string    `json:"updated_by"`
 	UpdatedTime time.Time `json:"updated_time"`
 	VehicleID   string    `json:"vehicle_id" sql:",fk"`
-}
-
-type UserNote struct {
-	Comment     string    `json:"comment"`
-	CreatedBy   string    `json:"created_by"`
-	CreatedTime time.Time `json:"created_time"`
-	ID          int       `json:"id" sql:",pk"`
-	UpdatedBy   string    `json:"updated_by"`
-	UpdatedTime time.Time `json:"updated_time"`
-	UserID      string    `json:"user_id" sql:",fk"`
-}
-
-type User struct {
-	ID        string     `json:"id" sql:",unique"`
-	Email     string     `json:"email"`
-	Phone     string     `json:"phone"`
-	Vehicles  []Vehicle  `json:"vehicles" sql:",fk"`
-	UserNotes []UserNote `json:"notes" sql:",fk"`
-}
-
-func (target *User) Merge(source User) User {
-	if target.Email != "" {
-		source.Email = target.Email
-	}
-	if target.Phone != "" {
-		source.Phone = target.Phone
-	}
-
-	return source
 }
