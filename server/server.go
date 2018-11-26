@@ -22,6 +22,7 @@ func CreateAndListen() {
 	v1.POST("/addUserNote", addUserNote)
 	v1.GET("/getCarNotes", getNotesForCar)
 	v1.GET("/getUserNotes", getNotesForUser)
+	v1.GET("/getUsers", getUserList)
 
 	_api.Start(":8081")
 }

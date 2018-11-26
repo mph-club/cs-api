@@ -10,6 +10,20 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
+func GetUserList() ([]models.User, error) {
+	var userList []models.User
+
+	db := connectToDB()
+	err := db.Model(&userList).
+		Select()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return userList, nil
+}
+
 func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 

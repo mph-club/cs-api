@@ -8,6 +8,17 @@ import (
 	"github.com/labstack/echo"
 )
 
+func getUserList(ctx echo.Context) error {
+	data, err := database.GetUserList()
+
+	if err != nil {
+		return ctx.JSON(
+			response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
+	}
+
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Users": data}))
+}
+
 func getApprovalQueue(ctx echo.Context) error {
 	urlQuery := ctx.Request().URL.Query()
 	status := ctx.QueryParam("status")
@@ -16,13 +27,10 @@ func getApprovalQueue(ctx echo.Context) error {
 	data, err := database.GetApprovalQueue(urlQuery, status)
 
 	if err != nil {
-		return ctx.JSON(
-			makeErrorResponse(
-				http.StatusBadRequest,
-				map[string]interface{}{"db_error": err.Error()}))
+		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(makeOKResponse(map[string]interface{}{"Vehicles": data}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Vehicles": data}))
 }
 
 func editCarStatus(ctx echo.Context) error {
@@ -30,22 +38,17 @@ func editCarStatus(ctx echo.Context) error {
 	var v models.Vehicle
 
 	if err := ctx.Bind(&v); err != nil {
-		return ctx.JSON(
-			makeErrorResponse(
-				http.StatusBadRequest,
-				map[string]interface{}{"database_error": err.Error()}))
+		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"database_error": err.Error()}))
 	}
 
 	err := database.EditCarStatus(&v)
 
 	if err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
-				http.StatusBadRequest,
-				map[string]interface{}{"db_error": err.Error()}))
+			response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "vehicle status was updated"}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"result": "vehicle status was updated"}))
 }
 
 func addCarNote(ctx echo.Context) error {
@@ -54,7 +57,8 @@ func addCarNote(ctx echo.Context) error {
 
 	if err := ctx.Bind(&n); err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
+			response(
+				false,
 				http.StatusBadRequest,
 				map[string]interface{}{"server_error": err.Error()}))
 	}
@@ -63,12 +67,13 @@ func addCarNote(ctx echo.Context) error {
 
 	if err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
+			response(
+				false,
 				http.StatusBadRequest,
 				map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "note was inserted"}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"result": "note was inserted"}))
 }
 
 func addUserNote(ctx echo.Context) error {
@@ -77,7 +82,8 @@ func addUserNote(ctx echo.Context) error {
 
 	if err := ctx.Bind(&n); err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
+			response(
+				false,
 				http.StatusBadRequest,
 				map[string]interface{}{"server_error": err.Error()}))
 	}
@@ -86,12 +92,13 @@ func addUserNote(ctx echo.Context) error {
 
 	if err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
+			response(
+				false,
 				http.StatusBadRequest,
 				map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(makeOKResponse(map[string]interface{}{"result": "note was inserted"}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"result": "note was inserted"}))
 }
 
 func getNotesForCar(ctx echo.Context) error {
@@ -102,12 +109,13 @@ func getNotesForCar(ctx echo.Context) error {
 	list, err := database.GetVehicleNotes(&v)
 	if err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
+			response(
+				false,
 				http.StatusBadRequest,
 				map[string]interface{}{"database_error": err.Error()}))
 	}
 
-	return ctx.JSON(makeOKResponse(map[string]interface{}{"notes": list}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"notes": list}))
 }
 
 func getNotesForUser(ctx echo.Context) error {
@@ -118,12 +126,13 @@ func getNotesForUser(ctx echo.Context) error {
 	list, err := database.GetUserNotes(&u)
 	if err != nil {
 		return ctx.JSON(
-			makeErrorResponse(
+			response(
+				false,
 				http.StatusBadRequest,
 				map[string]interface{}{"database_error": err.Error()}))
 	}
 
-	return ctx.JSON(makeOKResponse(map[string]interface{}{"notes": list}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"notes": list}))
 }
 
 func deleteNotes(ctx echo.Context) {
