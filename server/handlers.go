@@ -9,14 +9,22 @@ import (
 )
 
 func getUserList(ctx echo.Context) error {
-	data, err := database.GetUserList()
+	count, data, err := database.GetUserList()
 
 	if err != nil {
 		return ctx.JSON(
 			response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Users": data}))
+	return ctx.JSON(
+		response(
+			true,
+			http.StatusOK,
+			map[string]interface{}{
+				"Users": data,
+				"Count": count,
+				},
+			))
 }
 
 func getApprovalQueue(ctx echo.Context) error {
