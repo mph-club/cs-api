@@ -23,8 +23,8 @@ func getUserList(ctx echo.Context) error {
 			map[string]interface{}{
 				"Users": data,
 				"Count": count,
-				},
-			))
+			},
+		))
 }
 
 func getApprovalQueue(ctx echo.Context) error {
@@ -50,13 +50,25 @@ func editCarStatus(ctx echo.Context) error {
 	}
 
 	err := database.EditCarStatus(&v)
-
 	if err != nil {
 		return ctx.JSON(
 			response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
 	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"result": "vehicle status was updated"}))
+}
+
+func getVehicleDetail(ctx echo.Context) error {
+	var v models.Vehicle
+	v.ID = ctx.Param("id")
+
+	detail, err := database.GetVehicleDetail(&v);
+
+	if err != nil {
+		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
+	}
+
+	return detail
 }
 
 func addCarNote(ctx echo.Context) error {
@@ -72,7 +84,6 @@ func addCarNote(ctx echo.Context) error {
 	}
 
 	err := database.InsertCarNote(&n)
-
 	if err != nil {
 		return ctx.JSON(
 			response(

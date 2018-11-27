@@ -16,13 +16,14 @@ func CreateAndListen() {
 		return ctx.String(200, "cs portal home!!!!")
 	})
 
-	v1.GET("/getAll", getApprovalQueue)
+	v1.GET("/vehicles", getApprovalQueue)
 	v1.POST("/editCarStatus", editCarStatus)
 	v1.POST("/addCarNote", addCarNote)
 	v1.POST("/addUserNote", addUserNote)
 	v1.GET("/getCarNotes", getNotesForCar)
 	v1.GET("/getUserNotes", getNotesForUser)
 	v1.GET("/getUsers", getUserList)
+	v1.GET("/vehicles/:id", getVehicleDetail)
 
 	_api.Start(":8081")
 }

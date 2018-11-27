@@ -24,6 +24,17 @@ func GetUserList() (int, []models.User, error) {
 	return count, userList, nil
 }
 
+func GetVehicleDetail(v models.Vehicle) (models.Vehicle, error) {
+	db := connectToDB()
+
+	if err := db.Model(&v).
+		Select(); err != nil {
+			return nil, err
+		}
+
+	return v, nil
+}
+
 func GetApprovalQueue(queryParams url.Values, status string) (int, []models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 
