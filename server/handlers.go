@@ -62,13 +62,12 @@ func getVehicleDetail(ctx echo.Context) error {
 	var v models.Vehicle
 	v.ID = ctx.Param("id")
 
-	detail, err := database.GetVehicleDetail(&v);
-
+	detail, err := database.GetVehicleDetail(v);
 	if err != nil {
 		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return detail
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Vehicle": detail}))
 }
 
 func addCarNote(ctx echo.Context) error {

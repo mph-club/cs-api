@@ -29,7 +29,7 @@ func GetVehicleDetail(v models.Vehicle) (models.Vehicle, error) {
 
 	if err := db.Model(&v).
 		Select(); err != nil {
-			return nil, err
+			return models.Vehicle{}, err
 		}
 
 	return v, nil
