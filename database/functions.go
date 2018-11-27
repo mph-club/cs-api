@@ -28,9 +28,10 @@ func GetVehicleDetail(v models.Vehicle) (models.Vehicle, error) {
 	db := connectToDB()
 
 	if err := db.Model(&v).
+		WherePK().
 		Select(); err != nil {
-			return models.Vehicle{}, err
-		}
+		return models.Vehicle{}, err
+	}
 
 	return v, nil
 }
