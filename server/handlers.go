@@ -24,13 +24,13 @@ func getApprovalQueue(ctx echo.Context) error {
 	status := ctx.QueryParam("status")
 
 	//fetch paged list of cars with status: PENDING
-	data, err := database.GetApprovalQueue(urlQuery, status)
+	count, data, err := database.GetApprovalQueue(urlQuery, status)
 
 	if err != nil {
 		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Vehicles": data}))
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Vehicles": data, "Count": count}))
 }
 
 func editCarStatus(ctx echo.Context) error {

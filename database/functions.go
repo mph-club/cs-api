@@ -24,35 +24,37 @@ func GetUserList() ([]models.User, error) {
 	return userList, nil
 }
 
-func GetApprovalQueue(queryParams url.Values, status string) ([]models.Vehicle, error) {
+func GetApprovalQueue(queryParams url.Values, status string) (int, []models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 
 	db := connectToDB()
 
 	if len(status) == 0 {
-		err := db.Model(&vehicleList).
+		count, err := db.Model(&vehicleList).
 			Apply(orm.Pagination(queryParams)).
 			Order("updated_time ASC").
-			Select()
+			SelectAndCount()
 		if err != nil {
 			log.Println(err)
-			return nil, err
+			return -1, nil, err
 		}
+
+		return count, vehicleList, nil
 	} else {
 		status = strings.ToUpper(status)
 
-		err := db.Model(&vehicleList).
+		count, err := db.Model(&vehicleList).
 			Apply(orm.Pagination(queryParams)).
 			Where("status = ?", status).
 			Order("updated_time ASC").
-			Select()
+			SelectAndCount()
 		if err != nil {
 			log.Println(err)
-			return nil, err
+			return -1, nil, err
 		}
+		
+		return count, vehicleList, nil
 	}
-
-	return vehicleList, nil
 }
 
 func EditCarStatus(vehicle *models.Vehicle) error {
