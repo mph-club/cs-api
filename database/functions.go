@@ -36,6 +36,18 @@ func GetVehicleDetail(v models.Vehicle) (models.Vehicle, error) {
 	return v, nil
 }
 
+func GetUserDetail(u models.User) (models.User, error) {
+	db := connectToDB()
+
+	if err := db.Model(&u).
+		WherePK().
+		Select(); err != nil {
+		return models.User{}, err
+	}
+
+	return u, nil
+}
+
 func GetApprovalQueue(queryParams url.Values, status string) (int, []models.Vehicle, error) {
 	var vehicleList []models.Vehicle
 

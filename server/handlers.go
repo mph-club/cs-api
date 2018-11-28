@@ -3,7 +3,6 @@ package server
 import (
 	"csportal-server/database"
 	"csportal-server/models"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -68,10 +67,21 @@ func getVehicleDetail(ctx echo.Context) error {
 		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
 	}
 
-	log.Println(detail)
-
 	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"Vehicle": detail}))
 }
+
+func getUserDetail(ctx echo.Context) error {
+	var u models.User
+	u.ID = ctx.Param("id")
+
+	detail, err := database.GetUserDetail(u)
+	if err != nil {
+		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"db_error": err.Error()}))
+	}
+
+	return ctx.JSON(response(true, http.StatusOK, map[string]interface{}{"User": detail}))
+}
+
 
 func addCarNote(ctx echo.Context) error {
 	//add a note to the users or vehicles notes array
