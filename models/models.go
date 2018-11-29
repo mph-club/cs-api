@@ -3,16 +3,16 @@ package models
 import "time"
 
 type DriverLicense struct {
-	Address      string    `json:"address"`
-	City         string    `json:"city"`
-	DLNumber     string    `json:"dl_number"`
-	DOBTimeStamp time.Time `json:"dobTime"`
-	FirstName    string    `json:"first_name"`
-	Height       string    `json:"height"`
-	ID           int       `json:"id"`
-	LastName     string    `json:"last_name"`
-	MiddleName   string    `json:"middle_name"`
-	State        string    `json:"state"`
+	Address    string `json:"address"`
+	City       string `json:"city"`
+	DLNumber   string `json:"dl_number"`
+	Birthdate  string `json:"birth_date"`
+	FirstName  string `json:"first_name"`
+	Height     string `json:"height"`
+	ID         int    `json:"id"`
+	LastName   string `json:"last_name"`
+	MiddleName string `json:"middle_name"`
+	State      string `json:"state"`
 }
 
 type User struct {
@@ -61,7 +61,7 @@ type Vehicle struct {
 	IsPublished  bool          `json:"is_published"`
 	LicensePlate string        `json:"license_plate"`
 	Make         string        `json:"make"`
-	Miles        int           `json:"miles"`
+	Miles        string        `json:"miles" sql:"type:miles"`
 	Model        string        `json:"model"`
 	Photos       []string      `json:"photos" sql:",array"`
 	Place        string        `json:"place"`
@@ -117,7 +117,7 @@ func (target *Vehicle) Merge(source Vehicle) Vehicle {
 	if target.Make != "" {
 		source.Make = target.Make
 	}
-	if target.Miles != 0 {
+	if target.Miles != "" {
 		source.Miles = target.Miles
 	}
 	if target.Model != "" {
