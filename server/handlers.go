@@ -4,6 +4,7 @@ import (
 	"csportal-server/database"
 	"csportal-server/models"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -217,6 +218,8 @@ func upsertStaff(ctx echo.Context) error {
 	if err := ctx.Bind(&s); err != nil {
 		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"json_bind_error": err.Error()}))
 	}
+
+	log.Println(s)
 
 	if err := database.UpsertStaff(s); err != nil {
 		return ctx.JSON(response(false, http.StatusBadRequest, map[string]interface{}{"database_error": err.Error()}))
