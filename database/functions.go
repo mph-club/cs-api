@@ -10,6 +10,74 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
+func UpsertStaff(s models.Staff) error {
+	db := connectToDB()
+
+	staff := models.Staff{
+		ID: s.ID,
+	}
+
+	if err := db.Select(&staff); err != nil {
+		log.Println(err.Error())
+		log.Println("user does not exist, create")
+
+		staff = staff.Merge(s)
+	} else {
+		log.Println("user does exist, update")
+
+		s = s.Merge(staff)
+
+		if dbErr := db.Update(&s); dbErr != nil {
+			return dbErr
+		}
+		return err
+	}
+
+	if err := db.Insert(&staff); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetStaffList() (int, []models.Staff, error) {
+	var staffList []models.Staff
+
+	db := connectToDB()
+	count, err := db.Model(&staffList).
+		SelectAndCount()
+
+	if err != nil {
+		return -1, nil, err
+	}
+
+	return count, staffList, nil
+}
+
+func GetStaffDetail(s models.Staff) (models.Staff, error) {
+	db := connectToDB()
+
+	if err := db.Model(&s).
+		WherePK().
+		Select(); err != nil {
+		return models.Staff{}, err
+	}
+
+	return s, nil
+}
+
+func DeleteStaff(s models.Staff) error {
+	db := connectToDB()
+
+	if _, err := db.Model(&s).
+		WherePK().
+		Delete(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetUserList() (int, []models.User, error) {
 	var userList []models.User
 
