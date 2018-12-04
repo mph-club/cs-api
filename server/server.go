@@ -1,6 +1,8 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -10,6 +12,16 @@ func CreateAndListen() {
 	_api := echo.New()
 
 	_api.Use(middleware.Logger())
+
+	allowedMethods := append(middleware.DefaultCORSConfig.AllowMethods, http.MethodOptions)
+
+	_api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     allowedMethods,
+		AllowHeaders:     []string{"Authorization", "Content-Type", "Origin", "User-Agent", "Host"},
+		ExposeHeaders:    []string{"Authorization", "Content-Type", "Origin", "User-Agent", "Host"},
+		AllowCredentials: true,
+	}))
 
 	v1 := _api.Group("api/v1", cognitoAuth)
 	v1.GET("/home", func(ctx echo.Context) error {
