@@ -29,7 +29,7 @@ func CreateAndListen() {
 	// *** staff endpoints ***
 	v1.POST("/staff", upsertStaff)
 	v1.GET("/staff", getStaff)
-	v1.GET("/staff/:id", getStaffDetail)
+	v1.DELETE("/staff/:id", deleteStaff)
 
 	_api.Start(":8081")
 }
